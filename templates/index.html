@@ -16,12 +16,20 @@
       </p>
     </div>
   </section>
-    <input type="file"
-       id="fileUploader1" name="avatar"
-       accept="pdf">
-    <input type="file"
-       id="fileUploader2" name="avatar"
-       accept="pdf">
- </body>
-
+  <form method=post enctype=multipart/form-data>
+    <div class="columns">
+      <div class="column">
+        <input type="file" name="file1" accept="pdf">
+      </div>
+      <div class="column">
+        <input type="file" name="file2" accept="pdf">
+      </div>
+    </div>
+    <div class="columns is-centered">
+      <div class="column is-one-fifth item">
+        <input type=submit value=diff class="button is-fullwidth">
+      </div>
+    </div>
+  </form>
+</body>
 </html>
