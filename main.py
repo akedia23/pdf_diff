@@ -1,46 +1,208 @@
-# Copyright 2018 Google LLC
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#     http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
+import os
+import fitz
+from flask import (
+    Flask,
+    request,
+    redirect,
+    url_for,
+    render_template,
+    send_from_directory,
+)
+from werkzeug.utils import secure_filename
+from diff_match_patch import diff_match_patch
 
-# [START gae_python38_render_template]
-# [START gae_python3_render_template]
-import datetime
-
-from flask import Flask, render_template
+UPLOAD_FOLDER = "static"
+ALLOWED_EXTENSIONS = {"pdf"}
 
 app = Flask(__name__)
+app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
 
 
-@app.route('/')
+def allowed_file(filename):
+    return "." in filename and filename.rsplit(".", 1)[1].lower() in ALLOWED_EXTENSIONS
+
+
+@app.after_request
+def add_header(response):
+    """
+    Add headers to both force latest IE rendering engine or Chrome Frame,
+    and also to cache the rendered page for 10 minutes.
+    """
+    response.headers["X-UA-Compatible"] = "IE=Edge,chrome=1"
+    response.headers["Cache-Control"] = "public, max-age=0"
+    return response
+
+
+@app.route("/", methods=["GET", "POST"])
 def root():
-    # For the sake of example, use static information to inflate the template.
-    # This will be replaced with real information in later steps.
-    dummy_times = [datetime.datetime(2018, 1, 1, 10, 0, 0),
-                   datetime.datetime(2018, 1, 2, 10, 30, 0),
-                   datetime.datetime(2018, 1, 3, 11, 0, 0),
-                   ]
+    if request.method == "POST":
+        if "file1" not in request.files:
+            print("No left file attached in request")
 
-    return render_template('index.html', times=dummy_times)
+            return redirect(request.url)
+
+        if "file2" not in request.files:
+            print("No right file attached in request")
+
+            return redirect(request.url)
+
+        file1 = request.files["file1"]
+        file2 = request.files["file2"]
+        if file1.filename == "":
+            print("No left file selected")
+
+            return redirect(request.url)
+
+        if file2.filename == "":
+            print("No right file selected")
+
+            return redirect(request.url)
+
+        if (file1 and allowed_file(file1.filename)) and (
+            file2 and allowed_file(file2.filename)
+        ):
+            filename1 = secure_filename(file1.filename)
+            filename2 = secure_filename(file2.filename)
+            file_path1 = os.path.join(app.config["UPLOAD_FOLDER"], filename1)
+            print(file_path1)
+            file1.save(file_path1)
+            file_path2 = os.path.join(app.config["UPLOAD_FOLDER"], filename2)
+            file2.save(file_path2)
+
+            semantic_diff(file_path1, file_path2)
+
+            os.remove(file_path1)
+            os.remove(file_path2)
+
+            return redirect(url_for("uploaded_files"))
+
+    return render_template("index.html")
 
 
-if __name__ == '__main__':
-    # This is used when running locally only. When deploying to Google App
-    # Engine, a webserver process such as Gunicorn will serve the app. This
-    # can be configured by adding an `entrypoint` to app.yaml.
-    # Flask's development server will automatically serve static files in
-    # the "static" directory. See:
-    # http://flask.pocoo.org/docs/1.0/quickstart/#static-files. Once deployed,
-    # App Engine itself will serve those files as configured in app.yaml.
-    app.run(host='127.0.0.1', port=8080, debug=True)
-# [END gae_python3_render_template]
-# [END gae_python38_render_template]
+@app.route("/diff")
+def uploaded_files():
+
+    return render_template("diff.html")
+
+
+def extract_text(file_path):
+    doc = fitz.open(file_path)
+    text = ""
+    rawdict = None
+    newdict = {}
+    idx = 0
+
+    for page in doc:
+        text = text + page.getText()
+        rawdict = page.getText(
+            "rawdict",
+            flags=fitz.TEXT_PRESERVE_LIGATURES & fitz.TEXT_PRESERVE_WHITESPACE,
+        )
+        for block in rawdict["blocks"]:
+            for line in block["lines"]:
+                if idx != 0:
+                    newdict[idx] = [None, "\n"]
+                    idx += 1
+                for span in line["spans"]:
+                    for char in span["chars"]:
+                        newdict[idx] = [char["origin"], char["c"]]
+                        idx += 1
+
+    return (text, newdict)
+
+
+def step(last_a, last_b, next):
+    op, s = next
+    l = len(s)
+
+    if -1 == op:
+        return ((op, s, (last_a, last_a + l), None), (last_a + l, last_b))
+
+    if 0 == op:
+        return (
+            (op, s, (last_a, last_a + l), (last_b, last_b + l)),
+            (last_a + l, last_b + l),
+        )
+
+    if 1 == op:
+        return ((op, s, None, (last_b, last_b + l)), (last_a, last_b + l))
+
+
+def semantic_diff(file1, file2):
+    dmp = diff_match_patch()
+    dmp.Diff_Timeout = 0
+    text1, rawtext1 = extract_text(file1)
+    text2, rawtext2 = extract_text(file2)
+    diffs = dmp.diff_main(text1, text2)
+    dmp.diff_cleanupSemantic(diffs)
+
+    temp_diffs_with_indxs = []
+    last_a = 0
+    last_b = 0
+    for chunk in diffs:
+        next, (next_a, next_b) = step(last_a, last_b, chunk)
+        last_a = next_a
+        last_b = next_b
+        temp_diffs_with_indxs.append(next)
+
+    diffs1 = []
+    diffs2 = []
+    indxs1 = []
+    indxs2 = []
+    for diff in temp_diffs_with_indxs:
+        temp = diff[1].strip("\n")
+        if temp == " " or temp == "":
+            continue
+        if diff[0] == 0:
+            continue
+
+        strings = diff[1].splitlines(True)
+        if diff[2] is None:
+            start_indx = diff[3][0]
+            for string in strings:
+                diffs2.append(string)
+                indxs2.append(start_indx)
+                start_indx = start_indx + len(string)
+        elif diff[3] is None:
+            start_indx = diff[2][0]
+            for string in strings:
+                diffs1.append(string)
+                indxs1.append(start_indx)
+                start_indx = start_indx + len(string)
+
+    highlight(file1, rawtext1, diffs1, indxs1)
+    highlight(file2, rawtext2, diffs2, indxs2, left=False)
+
+
+def highlight(file, rawtext, diffs, indxs, left=True):
+    red = (0.921, 0.498, 0.521)
+    green = (0.498, 0.921, 0.525)
+
+    doc = fitz.open(file)
+
+    for diff, indx in zip(diffs, indxs):
+        top_left_coord = rawtext[indx][0][0]
+        for page in doc:
+            instances = page.searchFor(diff)
+            if instances is None:
+                continue
+            for inst in instances:
+                if inst[0] == top_left_coord:
+                    annot = page.addHighlightAnnot(inst)
+                    if left:
+                        annot.set_colors(stroke=red)
+                    else:
+                        annot.set_colors(stroke=green)
+                    annot.update()
+    if left:
+        doc.save(
+            os.path.join("static", "diff1.pdf"), garbage=4, deflate=True, clean=True
+        )
+    else:
+        doc.save(
+            os.path.join("static", "diff2.pdf"), garbage=4, deflate=True, clean=True
+        )
+
+
+if __name__ == "__main__":
+    app.run(host="127.0.0.1", port=8080, debug=True)

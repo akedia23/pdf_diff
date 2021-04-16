@@ -1,18 +1,35 @@
-<!doctype html>
+<!DOCTYPE html>
 <html>
 <head>
-  <title>Datastore and Firebase Auth Example</title>
-  <script src="{{ url_for('static', filename='script.js') }}"></script>
-  <link type="text/css" rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <title></title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.2/css/bulma.min.css">
 </head>
+
 <body>
-
-  <h1>Datastore and Firebase Auth Example</h1>
-
-  <h2>Last 10 visits</h2>
-  {% for time in times %}
-    <p>{{ time }}</p>
-  {% endfor %}
-
+  <section class="hero is-link">
+    <div class="hero-body">
+      <p class="title">
+        PDF Diff Bot
+      </p>
+      <p class="subtitle">
+        Quickly diff two pdfs to see differences
+      </p>
+    </div>
+  </section>
+  <form method=post enctype=multipart/form-data>
+    <div class="columns">
+      <div class="column">
+        <input type="file" name="file1" accept="pdf">
+      </div>
+      <div class="column">
+        <input type="file" name="file2" accept="pdf">
+      </div>
+    </div>
+    <div class="columns is-centered">
+      <div class="column is-one-fifth item">
+        <input type=submit value=diff class="button is-fullwidth">
+      </div>
+    </div>
+  </form>
 </body>
 </html>
