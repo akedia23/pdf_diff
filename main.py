@@ -22,6 +22,17 @@ def allowed_file(filename):
     return "." in filename and filename.rsplit(".", 1)[1].lower() in ALLOWED_EXTENSIONS
 
 
+@app.after_request
+def add_header(response):
+    """
+    Add headers to both force latest IE rendering engine or Chrome Frame,
+    and also to cache the rendered page for 10 minutes.
+    """
+    response.headers["X-UA-Compatible"] = "IE=Edge,chrome=1"
+    response.headers["Cache-Control"] = "public, max-age=0"
+    return response
+
+
 @app.route("/", methods=["GET", "POST"])
 def root():
     if request.method == "POST":
@@ -72,7 +83,6 @@ def root():
 def uploaded_files():
 
     return render_template("diff.html")
-    # return send_from_directory(app.config["UPLOAD_FOLDER"], filename)
 
 
 def extract_text(file_path):
