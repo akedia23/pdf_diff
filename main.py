@@ -64,7 +64,6 @@ def root():
             filename1 = secure_filename(file1.filename)
             filename2 = secure_filename(file2.filename)
             file_path1 = os.path.join(app.config["UPLOAD_FOLDER"], filename1)
-            print(file_path1)
             file1.save(file_path1)
             file_path2 = os.path.join(app.config["UPLOAD_FOLDER"], filename2)
             file2.save(file_path2)
