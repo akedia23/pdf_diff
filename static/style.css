@@ -1,9 +1,58 @@
+body {
+  font-family: Comic sans MS;
+  width:100%;
+  margin-left:auto;
+  margin-right:auto;
+
+}
+
+.title {
+  text-align: center
+}
+.centered-wrapper {
+  position: relative;
+  text-align: center;
+}
+
+.container {
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+
 body,
 html {
   width: 100%;
   height: 100%;
   margin: 0;
   padding: 0;
+  background-color: rgb(97, 196, 221); 
+} 
+
+img,
+html {
+  display: block;
+  margin: 0 auto;
+}
+
+nav{
+  background-color: purple;
+}
+
+.p{
+  font-size: 24px;
+  text-transform: uppercase;
+  font-weight: 900;
+  color: #a43a9f;
+}
+
+.center {
+  margin: auto;
+  width: 50%;
+  border: 3px solid green;
+  padding: 10px;
 }
 
 .columns {
