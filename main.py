@@ -95,7 +95,7 @@ def extract_text(file_path):
         text = text + page.getText()
         rawdict = page.getText(
             "rawdict",
-            flags=fitz.TEXT_PRESERVE_LIGATURES & fitz.TEXT_PRESERVE_WHITESPACE,
+            flags=fitz.TEXT_PRESERVE_LIGATURES | fitz.TEXT_PRESERVE_WHITESPACE,
         )
         for block in rawdict["blocks"]:
             for line in block["lines"]:
