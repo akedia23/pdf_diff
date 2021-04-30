@@ -43,8 +43,29 @@ html {
   margin: 0 auto;
 }
 
-nav{
-  background-color: purple;
+.but {
+  background-color:rgb(97, 196, 221);
+  color: #363638;
+  padding: 10px;
+  border-radius: 10px;
+  -moz-border-radius: 10px;
+  -webkit-border-radius: 10px;
+  margin:10px
+}
+
+.medium-btn {
+  font-size : 20px; 
+  font-style: normal;
+  width: 200px;
+  height: 50px;
+}
+
+.header {
+  padding: 60px;
+  text-align: center;
+  background: rgb(21, 126, 224);
+  color: white;
+  font-size: 50px;
 }
 
 .p{
