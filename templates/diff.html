@@ -6,14 +6,29 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 
+
+
+
 <body>
   <section class="hero is-link">
     <div class="hero-body">
-      <p class="title">
-        <p style="font-family: Comic sans MS">
-        <img src="https://miro.medium.com/max/1033/1*MAsNORFL89roPfIFMBnA4A.jpeg" width="180" height="200" alt="logo" class="logos"/>
+      
         <p style="font-family: Comic sans MS">    
-          <h2 style="text-align:center">Diffing Complete!</h2>
+          <h1 style="text-align:center">Diffing Complete!</h1>
+          <div class="hero-body">
+            <p class="subtitle">
+              <p style="font-family: Comic sans MS">
+              <div class="text-center">
+                <button onclick="goBack()">Start Over</button>
+              </p>
+              <script>
+                function goBack() {
+                  window.history.back();
+                }
+                </script>
+            </div>
+          </div>
+          
         </p> 
     </div>
   </section>
@@ -30,3 +45,7 @@
     </div>
 </body>
 </html>
+
+
+
+
