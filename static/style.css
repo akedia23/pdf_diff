@@ -1,9 +1,15 @@
+
 body {
   font-family: Comic sans MS;
   width:100%;
   margin-left:auto;
   margin-right:auto;
 
+}
+
+P {
+  width: 0%; 
+  margin: 0 200px; 
 }
 
 .title {
@@ -48,11 +54,12 @@ nav{
   color: #a43a9f;
 }
 
-.center {
+.center-block {
   margin: auto;
-  width: 50%;
-  border: 3px solid green;
+  width: 30%;
+  border: 3px solid rgb(18, 100, 224);
   padding: 10px;
+  fill:rgb(97, 196, 221)
 }
 
 .columns {
