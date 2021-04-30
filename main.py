@@ -10,6 +10,10 @@ from flask import (
 )
 from werkzeug.utils import secure_filename
 from diff_match_patch import diff_match_patch
+from io import BytesIO
+from datetime import datetime
+import random
+import math
 
 UPLOAD_FOLDER = "static"
 ALLOWED_EXTENSIONS = {"pdf"}
@@ -20,17 +24,6 @@ app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
 
 def allowed_file(filename):
     return "." in filename and filename.rsplit(".", 1)[1].lower() in ALLOWED_EXTENSIONS
-
-
-@app.after_request
-def add_header(response):
-    """
-    Add headers to both force latest IE rendering engine or Chrome Frame,
-    and also to cache the rendered page for 10 minutes.
-    """
-    response.headers["X-UA-Compatible"] = "IE=Edge,chrome=1"
-    response.headers["Cache-Control"] = "public, max-age=0"
-    return response
 
 
 @app.route("/", methods=["GET", "POST"])
@@ -63,15 +56,11 @@ def root():
         ):
             filename1 = secure_filename(file1.filename)
             filename2 = secure_filename(file2.filename)
-            file_path1 = os.path.join(app.config["UPLOAD_FOLDER"], filename1)
-            file1.save(file_path1)
-            file_path2 = os.path.join(app.config["UPLOAD_FOLDER"], filename2)
-            file2.save(file_path2)
 
-            semantic_diff(file_path1, file_path2)
+            file1_bytes = BytesIO(file1.read())
+            file2_bytes = BytesIO(file2.read())
 
-            os.remove(file_path1)
-            os.remove(file_path2)
+            semantic_diff(file1_bytes, file2_bytes)
 
             return redirect(url_for("uploaded_files"))
 
@@ -80,12 +69,22 @@ def root():
 
 @app.route("/diff")
 def uploaded_files():
+    src1 = (
+        "\static\diff1.pdf?timestamp="
+        + datetime.now().strftime("%m%d%Y%H%M%S")
+        + str(math.floor(random.random() * 100000))
+    )
+    src2 = (
+        "\static\diff2.pdf?timestamp="
+        + datetime.now().strftime("%m%d%Y%H%M%S")
+        + str(math.floor(random.random() * 100000))
+    )
 
-    return render_template("diff.html")
+    return render_template("diff.html", url1=src1, url2=src2)
 
 
-def extract_text(file_path):
-    doc = fitz.open(file_path)
+def extract_text(file):
+    doc = fitz.open(stream=file, filetype="pdf")
     text = ""
     rawdict = None
     newdict = {}
@@ -177,7 +176,7 @@ def highlight(file, rawtext, diffs, indxs, left=True):
     red = (0.921, 0.498, 0.521)
     green = (0.498, 0.921, 0.525)
 
-    doc = fitz.open(file)
+    doc = fitz.open(stream=file, filetype="pdf")
 
     for diff, indx in zip(diffs, indxs):
         top_left_coord = rawtext[indx][0][0]
