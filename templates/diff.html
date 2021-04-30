@@ -6,28 +6,27 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 
-
-
-
 <body>
   <section class="hero is-link">
-    <div class="hero-body">
+    <div class="header">
       
         <p style="font-family: Comic sans MS">    
-          <h1 style="text-align:center">Diffing Complete!</h1>
+          <h1 style="text-align:center">Diffing Complete!
           <div class="hero-body">
             <p class="subtitle">
               <p style="font-family: Comic sans MS">
-              <div class="text-center">
-                <button onclick="goBack()">Start Over</button>
+              <div class="align-self-end ml-auto">
+                <button onclick="goBack()" class="but medium-btn">Start Over</button>
               </p>
+              </div>
               <script>
                 function goBack() {
                   window.history.back();
                 }
                 </script>
+              </div>
             </div>
-          </div>
+          </h1>
           
         </p> 
     </div>
@@ -45,7 +44,4 @@
     </div>
 </body>
 </html>
-
-
-
 
