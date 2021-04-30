@@ -1,17 +1,10 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title></title>
-    <!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.2/css/bulma.min.css"> -->
-    <!-- CSS below-->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css" 
-    integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6" 
-    crossorigin="anonymous">
-    <link rel="stylesheet" href="./style.css" />
-    <!-- JavaScript Bundle with Popper -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js" 
-    integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf" 
-    crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+  <!-- Bootstrap & Related Links-->
+
+  <link rel="stylesheet" href="static/styles.css">
 </head>
 
 <body class="centered-wrapper">
@@ -24,32 +17,105 @@
       <a class="navbar-brand" href="#">
          <p class="title">
           <p style="font-family: Comic sans MS">
-            <div class="text-center">
-              <img src="https://miro.medium.com/max/1033/1*MAsNORFL89roPfIFMBnA4A.jpeg" class="rounded mx-auto d-block" width="180" height="200"/>
+
+            <!--<body>
+              cont is the entire box; changing its CSS changes its position on the page 
+              <div class="cont">
+                 box is the area that contains the image, username, and pass fields, but not the button bar and login buttons 
+                  <div class="box">
+                     Creates the entire top row with close button and three circular buttons
+                      <div class="row top">
+                          <div class="left">
+                              <i class="fa fa-times close"></i>
+                          </div>
+                          <div class="right">
+                              <i class=" fa fa-circle but one"></i>
+                              <i class=" fa fa-circle but two"></i>
+                              <i class=" fa fa-circle but three"></i>
+                          </div>
+                      </div>
+                      
+                      <div class="row middle sg">
+                          <div class="row pic sg">
+                              <div class="text-center">
+                                  <img src="https://placeimg.com/200/200/nature" alt="fleur-de-lis" class="photo">
+                              </div>
+                          </div>
+                          <form action="#" class="form-horizontal form">
+                              <div class="input-group y">
+                                  <span class="input-group-addon"><i class="fa fa-user use"></i></span>
+                                  <input type="text" class="form-control" placeholder="Username">
+                              </div>
+                              <div class="input-group">
+                                  <span class="input-group-addon"><i class="fa faunlock-alt use"></i></span>
+                                  <input type="password" class="form-control" placeholder="Password">
+                              </div>
+                          </form>
+                      </div>
+                      <div class="row base sg">
+                          <h2 class="text-center login">Login</h2>
+                      </div>
+                  </div>
+              </div>
+          </body> -->
+
+            
+
+            <div class="hero-body">
+              <p class="subtitle">
+                <p style="font-family: Comic sans MS">
+                <div class="text-center">
+                 <img src="https://miro.medium.com/max/1033/1*MAsNORFL89roPfIFMBnA4A.jpeg" class="center-block" width="180" height="200"/>
               <h1 style="font-family: Comic sans MS">PDF Diff Bots</h1>
+                </p>
+              </div>
+            </div>
               </p>
               <div class="hero-body">
                 <p class="subtitle">
                   <p style="font-family: Comic sans MS">
-                  </h3>Quickly diff two pdfs to see differences</h3>
+                  <div class="text-center">
+                  </h3>Quickly diff two pdfs to see differences </h3>
                   </p>
+                </div>
               </div>
               <form method=post enctype=multipart/form-data>
                 <div class="container">
-                  <div class="row justify-content-start">
-                    <div class="p-2 justify-content-md-end">
-                      <input type="file" name="file1" accept="pdf">
+                  <div class="hero-body">
+                    <p class="subtitle">
+                      <p style="font-family: Comic sans MS">
+                      <div class="text-center">
+                        <input type="file" name="file1" accept="pdf" class="center-block">
+                      </p>
                     </div>
-                    <div class="p-2 justify-content-md-end">
-                      <input type="file" name="file2" accept="pdf">
+                    <div class="text-center">
+                      <input type="file" name="file2" accept="pdf" class="center-block">
+                    </div>
+                  </div>
+
+                  
+
+
+                 
+
+                
+
+                  <div class="hero-body">
+                    <p class="subtitle">
+                      <p style="font-family: Comic sans MS">
+                      <div class="text-center">
+                        <input type=submit value="Diff Files" class="center-block">
+                      </p>
                     </div>
                   </div>
                 </div>
-                <div class="col-md-4 offset-md-4"></div>
-                    <div class=".col-6 .col-sm-3">
-                      <input type=submit value="Diff Files" class="button is-fullwidth">
-                    </div>  
-                 </div>
+
+
+
+
+
+
+                
               </form>
                   </ul>
                 </div>
@@ -57,6 +123,7 @@
             </nav>
             </div>
           </p>
+        
   </section>
 </body>
-</html>
+</html> 
